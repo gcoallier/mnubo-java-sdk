@@ -619,30 +619,30 @@ Column definitions are packaged in a `ColumnDefinition`.
 List<ColumnDefinition> columns = resultSet.getColumnDefinitions();
 
 // Get all the Search Rows (including column definitions)
-List<SearchRow> searchRows = resultSet.getRowsData();
+List<Row> searchRows = resultSet.all();
 
 // Get all the column with label and Type from a Search Rows <line number>
-List<ColumnDefinition> columns = searchRows.get(0).getColumnDefinitions();
+List<ColumnDefinition> columnsFromRow = searchRows.get(0).getColumnDefinitions();
 
 // Iterator can be used to got through rs (rows)
 
     while (resultSet.iterator().hasNext()) {
-        SearchRow searchRow = resultSet.iterator().next();
+        Row searchRow = resultSet.iterator().next();
 
         // Get Column Definitions for the Search Row
         List<ColumnDefinition> columnDefinitions = searchRow.getColumnDefinitions();
         
-        // You need to find the dataType to get the corresponding value
+        // You need to find the data type (primitive type) to get the corresponding value
         for (ColumnDefinition columnDefinition : columnDefinitions) {
-            String datatype = columnDefinition.getDataType();
+            String datatype = columnDefinition.getPrimitiveType();
         }
         
         // Get data of the row for a specific column :
-        // The search Row method use the datatype (not the High Level Type)
-        // For example if the datatype is "STRING" and we want the data of the column "column1":
+        // The search Row method use the primitive type (not the High Level Type)
+        // For example if the primitive type is "STRING" and we want the data of the column "column1":
         String stringData = searchRow.getString("column1");
         
-        // Other Example with when datatype is "DOUBLE" and we want the data of the column "column2":
+        // Other Example with when primitive type is "DOUBLE" and we want the data of the column "column2":
         Double doubleData = searchRow.getDouble("column2");
     }
 ```
@@ -661,7 +661,7 @@ MnuboSDKClient mnuboClient = MnuboSDKFactory.getClient( HOST , CONSUMER_KEY , CO
 SearchSDK mnuboSearchClient = mnuboClient.getSearchClient();
 
 //Get the list of DataSet
-List<DataSet> datasets = mnuboSearchClient.getDatasets( query );
+List<DataSet> datasets = mnuboSearchClient.getDatasets();
 ```
 
 You can use the data return by the Basic Search Query.
@@ -673,7 +673,7 @@ You can use the data return by the Basic Search Query.
         String datasetKey = dataset.getKey();
         
         for(Field field: dataset.getFields()) {
-            ContainerType containerType = field.getContainerType();
+            String containerType = field.getContainerType();
             String fieldDescription = field.getDescription();
             String fieldDisplayName = field.getDisplayName();
             String fieldHighLevelType = field.getHighLevelType();
