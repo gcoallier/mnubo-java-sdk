@@ -66,16 +66,14 @@ public class MnuboSDKConfigTest {
             put("-10", format("%s property has to be an positive integer.", INGESTION_PORT));
             put("9999999", format("%s property has to be a valid port.", INGESTION_PORT));
         }});
-            put(RESTITUTION_PORT, new HashMap<String, String>() {
-                {
-                    put(null, format("%s property has to be a valid String.", RESTITUTION_PORT));
-                    put("", format("%s property has to be a valid String.", RESTITUTION_PORT));
-                    put("54d", format("%s property has to be an positive integer.", RESTITUTION_PORT));
-                    put("0", format("%s property has to be a valid port.", RESTITUTION_PORT));
-                    put("-10", format("%s property has to be an positive integer.", RESTITUTION_PORT));
-                    put("9999999", format("%s property has to be a valid port.", RESTITUTION_PORT));
-                }
-            });
+        put(RESTITUTION_PORT, new HashMap<String, String>() {{
+            put(null, format("%s property has to be a valid String.", RESTITUTION_PORT));
+            put("", format("%s property has to be a valid String.", RESTITUTION_PORT));
+            put("54d", format("%s property has to be an positive integer.", RESTITUTION_PORT));
+            put("0", format("%s property has to be a valid port.", RESTITUTION_PORT));
+            put("-10", format("%s property has to be an positive integer.", RESTITUTION_PORT));
+            put("9999999", format("%s property has to be a valid port.", RESTITUTION_PORT));
+        }});
         put(AUTHENTICATION_PORT, new HashMap<String, String>() {{
             put(null, format("%s property has to be a valid String.", AUTHENTICATION_PORT));
             put("", format("%s property has to be a valid String.", AUTHENTICATION_PORT));
@@ -217,9 +215,9 @@ public class MnuboSDKConfigTest {
             case INGESTION_PORT:
                 config.withIngestionPort(value);
                 break;
-        case RESTITUTION_PORT:
-            config.withRestitutionPort(value);
-            break;
+            case RESTITUTION_PORT:
+                config.withRestitutionPort(value);
+                break;
             case AUTHENTICATION_PORT:
                 config.withAuthenticationPort(value);
                 break;

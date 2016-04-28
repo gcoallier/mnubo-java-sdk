@@ -7,6 +7,9 @@ import static java.lang.String.format;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mnubo.java.sdk.client.models.Event;
+import com.mnubo.java.sdk.client.models.result.Result;
 import com.mnubo.java.sdk.client.spi.EventsSDK;
 
 public class EventsSDKServicesTest extends AbstractServiceTest {
@@ -23,6 +27,16 @@ public class EventsSDKServicesTest extends AbstractServiceTest {
     @Before
     public void eventSetup() {
         objectClient = getClient().getEventClient();
+
+        List<Result> resultsMockSetup = new ArrayList<>();
+        resultsMockSetup.add(new Result("idEventTest1", "sucess", ""));
+        resultsMockSetup.add(new Result("idEventResult2", "error", "Object for the Event doesn't exist"));
+        resultsMockSetup.add(new Result("idEventTest3", "error", "Other error for test"));
+        resultsMockSetup.add(new Result("idEventTest4", "sucess", ""));
+
+        // Mock Call to POST Events
+        when(restTemplate.postForObject(any(String.class), any(Object.class), eq(List.class)))
+                         .thenReturn(resultsMockSetup);
     }
 
     @Test
@@ -36,8 +50,11 @@ public class EventsSDKServicesTest extends AbstractServiceTest {
 
         assertThat(url, is(equalTo(format("https://%s:443/api/v3/events",HOST))));
 
-        objectClient.send(events);
+        List<Result> results = objectClient.send(events);
+
+        validateResult(results);
     }
+
 
     @Test
     public void postListEventListNullThenFail() {
@@ -69,7 +86,9 @@ public class EventsSDKServicesTest extends AbstractServiceTest {
 
         assertThat(url, is(equalTo(format("https://%s:443/api/v3/objects/%s/events",HOST, deviceId))));
 
-        objectClient.send(deviceId, events);
+        List<Result> results = objectClient.send(deviceId, events);
+
+        validateResult(results);
     }
 
     @Test
@@ -116,5 +135,24 @@ public class EventsSDKServicesTest extends AbstractServiceTest {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("device_Id cannot be blank.");
         objectClient.send(deviceId, events);
+    }
+
+    private void validateResult(List<Result> results) {
+        assertThat(results.size(), equalTo(4));
+
+        assertThat(results.get(0).getId(), equalTo("idEventTest1"));
+        assertThat(results.get(1).getId(), equalTo("idEventResult2"));
+        assertThat(results.get(2).getId(), equalTo("idEventTest3"));
+        assertThat(results.get(3).getId(), equalTo("idEventTest4"));
+
+        assertThat(results.get(0).getResult(), equalTo("sucess"));
+        assertThat(results.get(1).getResult(), equalTo("error"));
+        assertThat(results.get(2).getResult(), equalTo("error"));
+        assertThat(results.get(3).getResult(), equalTo("sucess"));
+
+        assertThat(results.get(0).getMessage(), equalTo(""));
+        assertThat(results.get(1).getMessage(), equalTo("Object for the Event doesn't exist"));
+        assertThat(results.get(2).getMessage(), equalTo("Other error for test"));
+        assertThat(results.get(3).getMessage(), equalTo(""));
     }
 }

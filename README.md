@@ -225,6 +225,61 @@ The JSON file "myOwnerFile.json" is as follows. remember only parameters to chan
 }
 ```
 
+Create or update a batch of Owners
+---------------
+To create a batch of owners you need to:
+1. Request an OwnersSDK interface using the mnubo client instance.
+2. Build a list of owner.
+
+This example describes how to create a batch of Owner:
+```
+//Request a mnubo client using the basic method.
+MnuboSDKClient mnuboClient = MnuboSDKFactory.getClient( HOST , CONSUMER_KEY , CONSUMER_SECRET );
+
+//get an Owners client interface
+OwnersSDK mnuboOwnersClient = mnuboClient.getOwnerClient();
+
+//build the list of owner to create / update
+List<Owner> owners = new ArrayList<>();
+
+owners.add(Owner.builder()
+                .withUsername("user1@mycompany.com")
+                .withPassword("dud7#%^ddd_J")
+                .withRegistrationDate(DateTime.parse("2015-01-01T00:00:00+04:00"))
+                .withAddedAttribute("age", 35)
+                .withAddedAttribute("gender", "male")
+                .withAddedAttribute("height", 1.80)
+                .build());
+                
+owners.add(Owner.builder()
+                .withUsername("user2@mycompany.com")
+                .withPassword("ewor$@$!@fqrq")
+                .withRegistrationDate(DateTime.parse("2015-02-01T00:00:00+04:00"))
+                .withAddedAttribute("age", 18)
+                .withAddedAttribute("gender", "male")
+                .withAddedAttribute("height", 1.75)
+                .build());
+                
+// A single batch can contain up to 1000 Owners
+
+//create the list of owners
+List<Result> results = mnuboOwnersClient.createOrUpdateOwners( owners );
+```
+
+You can verify if there is any error(s) for the list of owners created / updated.
+
+The API result will contain a list of the “username”s (id), their results (“success” or “error”)
+and the message if there is an error.
+
+Here is an example to get the data of the list of Result:
+```
+for(Result r: results) {
+    String id = r.getId();
+    String result = r.getResult();
+    String message = r.getMessage();
+}
+```
+
 Deleting owners
 ---------------
 
@@ -375,6 +430,66 @@ The JSON file "myObjectFile.json" is as follows:
 }
 ```
 
+Create or update a batch of Objects
+----------------------
+To create a batch of objects you need to:
+1. Request an ObjectSDK interface from the mnubo client instance.
+2. Build a list of objects.
+
+```
+//get a mnubo client using the basic method.
+MnuboSDKClient mnuboClient = MnuboSDKFactory.getClient( HOST , CONSUMER_KEY , CONSUMER_SECRET );
+
+//get an Object client interface
+ObjectsSDK mnuboObjectClient = mnuboClient.getObjectClient();
+
+//build the list of objects to create / update
+
+List<SmartObject> objects = new ArrayList<>();
+
+objects.add(SmartObject.builder()
+                       .withDeviceId("connect_alpha.6hv135nw00393.1234567")
+                       .withObjectType("gateway")
+                       .withOwner("user1@mycompany.com")
+                       .withRegistrationDate(DateTime.now())
+                       .withAddedAttribute("partnerid", "connect_alpha")
+                       .withAddedAttribute("business_line", "connect")
+                       .withAddedAttribute("siteid", "6hv135nw00393")
+                       .withAddedAttribute("site_description", "My connected House 1")
+                       .build());
+                       
+objects.add(SmartObject.builder()
+                       .withDeviceId("connect_beta.7hv234nw60696.7654321")
+                       .withObjectType("gateway")
+                       .withOwner("user2@mycompany.com")
+                       .withRegistrationDate(DateTime.now())
+                       .withAddedAttribute("partnerid", "connect_beta")
+                       .withAddedAttribute("business_line", "connect")
+                       .withAddedAttribute("siteid", "7hv234nw60696")
+                       .withAddedAttribute("site_description", "My connected House 2")
+                       .build());
+                       
+// A single batch can contain up to 1000 Objects
+
+// Create the list of objects
+List<Result> results = mnuboObjectClient.createOrUpdateSmartObjects( objects );
+```
+
+You can verify if there is any error(s) for the list of owners created / updated.
+
+The API result will contain a list of the “x_device_id”s (id), their results (“success” or “error”)
+and the message if there is an error.
+
+Here is an example to get the data of the list of Result:
+```
+for(Result r: results) {
+    String id = r.getId();
+    String result = r.getResult();
+    String message = r.getMessage();
+}
+```
+
+
 Deleting objects
 ----------------
 
@@ -428,7 +543,7 @@ Event event2 = Event.builder()
 event2Send.add(event2);
 
 //send the event
-mnuboEventClient.send( objectID, event2Send );
+List<Result> results = mnuboEventClient.send( objectID, event2Send );
 ```
 
 You can also send multiple events to a single object using a JSON file:
@@ -449,7 +564,7 @@ String event2BeSent = readingFile( "myEvents.json" );
 EventValues event2Send = SDKMapperUtils.readValue( event2BeSent , Events.class );
 
 //send the event
-mnuboEventClient.send( objectID, event2Send );
+List<Result> results = mnuboEventClient.send( objectID, event2Send );
 ```
 
 The JSON file " myEventsByObjectFile.json " is as follows:
@@ -472,6 +587,21 @@ The JSON file " myEventsByObjectFile.json " is as follows:
     }
 ]
 ```
+
+You can verify if there is any error(s) for the list of owners created / updated.
+
+The API result will contain a list of the “x_device_id”s (id), their results (“success” or “error”)
+and the message if there is an error.
+
+Here is an example to get the data of the list of Result:
+```
+for(Result r: results) {
+    String id = r.getId();
+    String result = r.getResult();
+    String message = r.getMessage();
+}
+```
+
 ### To send multiple events to multiple objects:
 
 ```
@@ -516,7 +646,7 @@ Event event3 = Event.builder()
 event2Send.add(event3);
 
 //send the event
-mnuboEventClient.send( event2Send );
+List<Result> results = mnuboEventClient.send( event2Send );
 ```
 
 You can also send multiple events to multiple objects using a JSON file:
@@ -535,7 +665,7 @@ String event2Besent = readingFile( "myEvents.json" );
 EventValues event2Send = SDKMapperUtils.readValue( event2Besent , EventValues.class );
 
 //send the event
-mnuboEventClient.send( event2Send );
+List<Result> results = mnuboEventClient.send( event2Send );
 ```
 
 The JSON file "myEvents.json" is as follows:
@@ -581,6 +711,20 @@ The JSON file "myEvents.json" is as follows:
         "varname": "mask-state",
     }
 ]
+```
+
+You can verify if there is any error(s) for the list of events sent.
+
+The API result will contain a list of the “event_id”s (id), their results (“success” or “error”)
+and the message if there is an error.
+
+Here is an example to get the data of the list of Result:
+```
+for(Result r: results) {
+    String id = r.getId();
+    String result = r.getResult();
+    String message = r.getMessage();
+}
 ```
 
 Searching

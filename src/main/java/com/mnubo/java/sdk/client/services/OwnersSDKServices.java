@@ -3,7 +3,10 @@ package com.mnubo.java.sdk.client.services;
 import static com.mnubo.java.sdk.client.utils.ValidationUtils.notBlank;
 import static com.mnubo.java.sdk.client.utils.ValidationUtils.validNotNull;
 
+import java.util.List;
+
 import com.mnubo.java.sdk.client.models.Owner;
+import com.mnubo.java.sdk.client.models.result.Result;
 import com.mnubo.java.sdk.client.spi.OwnersSDK;
 
 class OwnersSDKServices implements OwnersSDK {
@@ -17,13 +20,13 @@ class OwnersSDKServices implements OwnersSDK {
 
     @Override
     public void create(Owner owner) {
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OWNER_PATH).build().toString();
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OWNER_PATH)
+                                            .build().toString();
 
         validNotNull(owner, "Owner body");
         notBlank(owner.getUsername(), "usermame cannot be blank.");
 
-        // posting
         sdkCommonServices.postRequest(url, Owner.class, owner);
     }
 
@@ -32,10 +35,11 @@ class OwnersSDKServices implements OwnersSDK {
         notBlank(username, "usermame cannot be blank.");
         notBlank(deviceId, "x_deviceId cannot be blank.");
 
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OWNER_PATH).pathSegment(username, "objects", deviceId, "claim")
-                                                         .build().toString();
-        // posting
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OWNER_PATH)
+                                            .pathSegment(username, "objects", deviceId, "claim")
+                                            .build().toString();
+
         sdkCommonServices.postRequest(url);
     }
 
@@ -45,10 +49,11 @@ class OwnersSDKServices implements OwnersSDK {
 
         validNotNull(owner, "Owner body");
 
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OWNER_PATH).pathSegment(username).build().toString();
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OWNER_PATH)
+                                            .pathSegment(username)
+                                            .build().toString();
 
-        // putting
         sdkCommonServices.putRequest(url, owner);
     }
 
@@ -56,11 +61,22 @@ class OwnersSDKServices implements OwnersSDK {
     public void delete(String username) {
         notBlank(username, "usermame cannot be blank.");
 
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OWNER_PATH).pathSegment(username).build().toString();
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OWNER_PATH)
+                                            .pathSegment(username)
+                                            .build().toString();
 
-        // putting
         sdkCommonServices.deleteRequest(url);
     }
 
+    @Override
+    public List<Result> createOrUpdateOwners(List<Owner> owners) {
+        validNotNull(owners, "List of owners body");
+
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OWNER_PATH)
+                                            .build().toString();
+
+        return sdkCommonServices.putRequest(url, owners, List.class);
+    }
 }

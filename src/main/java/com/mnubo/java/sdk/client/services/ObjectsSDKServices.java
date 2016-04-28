@@ -4,7 +4,10 @@ import static com.mnubo.java.sdk.client.Constants.OBJECT_PATH;
 import static com.mnubo.java.sdk.client.utils.ValidationUtils.notBlank;
 import static com.mnubo.java.sdk.client.utils.ValidationUtils.validNotNull;
 
+import java.util.List;
+
 import com.mnubo.java.sdk.client.models.SmartObject;
+import com.mnubo.java.sdk.client.models.result.Result;
 import com.mnubo.java.sdk.client.spi.ObjectsSDK;
 
 class ObjectsSDKServices implements ObjectsSDK {
@@ -17,16 +20,15 @@ class ObjectsSDKServices implements ObjectsSDK {
 
     @Override
     public void create(SmartObject object) {
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OBJECT_PATH).build().toString();
-
         validNotNull(object, "Object body");
         notBlank(object.getObjectType(), "x_object_Type cannot be blank.");
         notBlank(object.getDeviceId(), "x_device_Id cannot be blank.");
 
-        // posting
-        sdkCommonServices. postRequest(url, SmartObject.class, object);
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OBJECT_PATH)
+                                            .build().toString();
 
+        sdkCommonServices. postRequest(url, SmartObject.class, object);
     }
 
     @Override
@@ -34,10 +36,11 @@ class ObjectsSDKServices implements ObjectsSDK {
         notBlank(deviceId, "x_device_Id cannot be blank.");
         validNotNull(object, "Object body");
 
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OBJECT_PATH).pathSegment(deviceId).build().toString();
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OBJECT_PATH)
+                                            .pathSegment(deviceId)
+                                            .build().toString();
 
-        // putting
         sdkCommonServices.putRequest(url, object);
     }
 
@@ -45,12 +48,22 @@ class ObjectsSDKServices implements ObjectsSDK {
     public void delete(String deviceId) {
         notBlank(deviceId, "x_device_Id cannot be blank.");
 
-        // url
-        final String url = sdkCommonServices.getIngestionBaseUri().path(OBJECT_PATH).pathSegment(deviceId).build().toString();
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OBJECT_PATH)
+                                            .pathSegment(deviceId)
+                                            .build().toString();
 
-        // putting
         sdkCommonServices.deleteRequest(url);
     }
 
+    @Override
+    public List<Result> createOrUpdateSmartObjects(List<SmartObject> objects) {
+        validNotNull(objects, "List of smart objects body");
 
+        final String url = sdkCommonServices.getIngestionBaseUri()
+                                            .path(OBJECT_PATH)
+                                            .build().toString();
+
+        return sdkCommonServices.putRequest(url, objects, List.class);
+    }
 }

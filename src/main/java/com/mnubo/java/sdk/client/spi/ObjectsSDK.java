@@ -1,6 +1,9 @@
 package com.mnubo.java.sdk.client.spi;
 
+import java.util.List;
+
 import com.mnubo.java.sdk.client.models.SmartObject;
+import com.mnubo.java.sdk.client.models.result.Result;
 
 /**
  * Event SDK Client. This interface gives access to handle objects.
@@ -30,4 +33,13 @@ public interface ObjectsSDK {
      */
     void delete(String deviceId);
 
+    /**
+     * Allows to add of update a list (batch) of SmartObjects.
+     *
+     * @param objects, list of SmartObject bean to be created or updated.
+     * 
+     * @return the list of result for all the objects with corresponding id, status and
+     * message.
+     */
+    List<Result> createOrUpdateSmartObjects(List<SmartObject> objects);
 }

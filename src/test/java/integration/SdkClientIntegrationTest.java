@@ -1,7 +1,9 @@
 package integration;
 
 import static java.lang.String.format;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
@@ -23,6 +25,7 @@ import com.mnubo.java.sdk.client.models.DataSet;
 import com.mnubo.java.sdk.client.models.Event;
 import com.mnubo.java.sdk.client.models.Owner;
 import com.mnubo.java.sdk.client.models.SmartObject;
+import com.mnubo.java.sdk.client.models.result.Result;
 import com.mnubo.java.sdk.client.models.result.ResultSet;
 import com.mnubo.java.sdk.client.services.MnuboSDKFactory;
 import com.mnubo.java.sdk.client.spi.MnuboSDKClient;
@@ -48,8 +51,36 @@ public class SdkClientIntegrationTest {
     private final String CONSUMER_SECRET = " < CHANGE_ME: PUT HERE YOUR CONSUMER SECRET > ";
 
     private final String DEVICE_ID = "MyDeviceTest01";
+    
+    private final List<String> BATCH_DEVICE_ID = new ArrayList<String>() {{
+        /*
+        CHANGE_ME: YOU MUST ADD HERE THE OBJECT DEVICE ID(s) DESIRED IN OBJECT PUT REQUESTS (BATCH).
+        YOU CAN ADD ONLY ONE OR MORE THAN ONE DEVICE ID AND IT HAS TO BE ADDED AS THE BELOW 
+        EXAMPLE WITH A VALUE:
+        add("MyDeviceTest01");
+        add("MyDeviceTest02");
+        add("MyDeviceTest03");
+        add("MyDeviceTest04");
+        etc
+         */
+        add(" < CHANGE_ME: PUT HERE THE DEVICE ID(s) > ");
+    }};
 
     private final String OWNER_USERNAME = "MyOwnerTest01";
+    
+    private final List<String> BATCH_OWNER_USERNAME = new ArrayList<String>() {{
+        /*
+        CHANGE_ME: YOU MUST ADD HERE THE OWNER USERNAME DESIRED IN OWNER PUT REQUESTS (BATCH).
+        YOU CAN ADD ONLY ONE OR MORE THAN ONE OWNER USERNAME AND IT HAS TO BE ADDED AS THE BELOW 
+        EXAMPLE WITH A VALUE:
+        add("MyOwnerTest01");
+        add("MyOwnerTest02");
+        add("MyOwnerTest03");
+        add("MyOwnerTest04");
+        etc
+         */
+        add(" < CHANGE_ME: PUT HERE THE OWNER'S USERNAME > ");
+    }};
 
     private final String DEVICE_ID_WITH_OWNER_LINK = "MyDeviceTest02";
 
@@ -58,8 +89,36 @@ public class SdkClientIntegrationTest {
     private final String EVENT_TYPE = "EventType";
 
     private final String OBJECT_TYPE = "ObjectType";
+    
+    private final List<String> BATCH_OBJECT_TYPE = new ArrayList<String>() {{
+        /*
+        CHANGE_ME: YOU MUST ADD HERE THE LIST OF OBJECT TYPE DESIRED IN OBJECT PUT REQUESTS (BATCH).
+        YOU CAN ADD ONLY ONE OR MORE THAN ONE OBJECT TYPE AND IT HAS TO BE ADDED AS THE BELOW 
+        EXAMPLE WITH A VALUE:
+        add("ObjectType1");
+        add("ObjectType2");
+        add("ObjectType3");
+        add("ObjectType4");
+        etc
+         */
+        add(" < CHANGE_ME: PUT HERE THE OBJECT'S TYPE > ");
+    }};
 
     private final String OWNER_PASSWORD = "myPassword";
+    
+    private final List<String> BATCH_OWNER_PASSWORD = new ArrayList<String>() {{
+        /*
+        CHANGE_ME: YOU MUST ADD HERE THE OWNER PASSWORD DESIRED IN OWNER PUT REQUESTS (BATCH).
+        YOU CAN ADD ONLY ONE OR MORE THAN ONE OWNER PASSWORD AND IT HAS TO BE ADDED AS THE BELOW 
+        EXAMPLE WITH A VALUE:
+        add("myPassword1");
+        add("myPassword2");
+        add("myPassword3");
+        add("myPassword4");
+        etc
+         */
+        add(" < CHANGE_ME: PUT HERE THE OWNER'S PASSWORD > ");
+    }};
 
     private final Map<String, Object> OWNER_ATTRIBUTES = new HashMap<String, Object>() {{
         /*
@@ -77,6 +136,22 @@ public class SdkClientIntegrationTest {
          */
         put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
     }};
+    
+    private final List<Map<String, Object>> BATCH_OWNER_ATTRIBUTES = new ArrayList<Map<String, Object>>() {{
+        /*
+        CHANGE_ME: YOU MUST ADD HERE THE MAP OF OWNER ATTRIBUTES DESIRED IN OWNER PUT REQUESTS FOR BATCH.
+        YOU CAN ADD ONLY ONE OR MORE THAN ONE MAP OF OWNER ATTRIBUTES AND IT HAS TO BE ADDED AS THE BELOW EXAMPLE WITH A NAME AND A
+        VALUE.
+        add(OWNER_ATTRIBUTES_BATCH1);
+        add(OWNER_ATTRIBUTES_BATCH2);
+        add(OWNER_ATTRIBUTES_BATCH3);
+        add(OWNER_ATTRIBUTES_BATCH4);
+        etc
+        NOTE: THIS EXAMPLE SHOW A LIST(BATCH) OF ATTRIBUTES WITH ONLY ONE MAP OF OWNER_ATTRIBUTES, 
+        BUT MULTIPLE MAP OF OWNER_ATTRIBUTES CAN BE ADDED
+         */
+        add(OWNER_ATTRIBUTES); // < CHANGE_ME: PUT HERE THE MAP OF OWNER ATTRIBUTES >
+    }};
 
     private final Map<String, Object> OBJECT_ATTRIBUTES = new HashMap<String, Object>() {{
         /*
@@ -93,6 +168,22 @@ public class SdkClientIntegrationTest {
         etc
          */
         put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+    }};
+    
+    private final List<Map<String, Object>> BATCH_OBJECT_ATTRIBUTES = new ArrayList<Map<String, Object>>() {{
+        /*
+        CHANGE_ME: YOU MUST ADD HERE THE MAP OF OBJECT ATTRIBUTES DESIRED IN OBJECT PUT REQUESTS FOR BATCH.
+        YOU CAN ADD ONLY ONE OR MORE THAN ONE MAP OF OBJECT ATTRIBUTES AND IT HAS TO BE ADDED AS THE BELOW EXAMPLE WITH A NAME AND A
+        VALUE.
+        add(OBJECT_ATTRIBUTES_BATCH1);
+        add(OBJECT_ATTRIBUTES_BATCH2);
+        add(OBJECT_ATTRIBUTES_BATCH3);
+        add(OBJECT_ATTRIBUTES_BATCH4);
+        etc
+        NOTE: THIS EXAMPLE SHOW A LIST(BATCH) OF ATTRIBUTES WITH ONLY ONE MAP OF OWNER_ATTRIBUTES, 
+        BUT MULTIPLE MAP OF OWNER_ATTRIBUTES CAN BE ADDED
+         */
+        add(OBJECT_ATTRIBUTES); // < CHANGE_ME: PUT HERE THE MAP OF OBJECT ATTRIBUTES >
     }};
 
     private final Map<String, Object> OWNER_ATTRIBUTES_2_UPDATE = new HashMap<String, Object>() {{
@@ -158,11 +249,11 @@ public class SdkClientIntegrationTest {
     }};
     
     private final String QUERY = 
-            /*
-            CHANGE_ME: YOU MUST MODIFY HERE THE QUERY SENT TO THE SEARCH API(S)
-            Example: "{ \"from\": \"event\", \"select\": [ {\"value\": \"speed\"} ] }"
-            */
-            "{ CHANGE_ME }";
+        /*
+        CHANGE_ME: YOU MUST MODIFY HERE THE QUERY SENT TO THE SEARCH API(S)
+        Example: "{ \"from\": \"event\", \"select\": [ {\"value\": \"speed\"} ] }"
+        */
+        "{ CHANGE_ME }";
 
     MnuboSDKClient client = MnuboSDKFactory.getClient(HOSTNAME, CONSUMER_KEY, CONSUMER_SECRET);
 
@@ -211,6 +302,47 @@ public class SdkClientIntegrationTest {
 
             //Putting Owner
             client.getOwnerClient().update(owner, OWNER_USERNAME);
+
+        } catch (HttpClientErrorException ex) {
+
+            log.error(
+                    format(
+                            "Error code: %s, Error Message: %s",
+                            ex.getStatusCode(),
+                            ex.getResponseBodyAsString()
+                    ),
+                    ex
+            );
+            fail();
+        } catch (Exception ex) {
+
+            log.error(format("Error Message: %s",ex.getMessage()), ex);
+            fail();
+        }
+    }
+    
+    @Test
+    public void T007_CreateUpdateOwnersBatch() {
+        try {
+            // Make sure the number of username / password / attributes are the same
+            assertThat(BATCH_OWNER_USERNAME.size(), equalTo(BATCH_OWNER_PASSWORD.size()));
+            assertThat(BATCH_OWNER_USERNAME.size(), equalTo(BATCH_OWNER_ATTRIBUTES.size()));
+
+            List<Owner> owners = new ArrayList<>();
+            
+            // Owners to be created
+            for (int i = 0; i < BATCH_OWNER_USERNAME.size(); i++) {
+                owners.add(Owner.builder()
+                                .withUsername(BATCH_OWNER_USERNAME.get(i))
+                                .withPassword(BATCH_OWNER_PASSWORD.get(i))
+                                .withAttributes(BATCH_OWNER_ATTRIBUTES.get(i))
+                                .build());
+            }
+
+            // PUT Batch of Owners
+            List<Result> results = client.getOwnerClient().createOrUpdateOwners(owners);
+
+            assertNotNull("The list of results for owners is NULL", results);
 
         } catch (HttpClientErrorException ex) {
 
@@ -374,6 +506,47 @@ public class SdkClientIntegrationTest {
             fail();
         }
     }
+    
+    @Test
+    public void T027_CreateUpdateObjectsBatch() {
+        try {
+            // Make sure the number of device id / object type / attributes are the same
+            assertThat(BATCH_DEVICE_ID.size(), equalTo(BATCH_OBJECT_TYPE.size()));
+            assertThat(BATCH_DEVICE_ID.size(), equalTo(BATCH_OBJECT_ATTRIBUTES.size()));
+
+            List<SmartObject> objects = new ArrayList<>();
+            
+            // Objects to be created
+            for (int i = 0; i < BATCH_DEVICE_ID.size(); i++) {
+                objects.add(SmartObject.builder()
+                                       .withDeviceId(BATCH_DEVICE_ID.get(i))
+                                       .withObjectType(BATCH_OBJECT_TYPE.get(i))
+                                       .withAttributes(BATCH_OBJECT_ATTRIBUTES.get(i))
+                                       .build());
+            }
+
+            // PUT Batch of Objects
+            List<Result> results = client.getObjectClient().createOrUpdateSmartObjects(objects);
+
+            assertNotNull("The list of results for objects is NULL", results);
+
+        } catch (HttpClientErrorException ex) {
+
+            log.error(
+                    format(
+                            "Error code: %s, Error Message: %s",
+                            ex.getStatusCode(),
+                            ex.getResponseBodyAsString()
+                    ),
+                    ex
+            );
+            fail();
+        } catch (Exception ex) {
+
+            log.error(format("Error Message: %s",ex.getMessage()), ex);
+            fail();
+        }
+    }
 
     @Test
     public void T030_DeleteObject() {
@@ -451,7 +624,9 @@ public class SdkClientIntegrationTest {
                     .build();
 
             //Posting event
-            client.getEventClient().send(Arrays.asList(event));
+            List<Result> results = client.getEventClient().send(Arrays.asList(event));
+
+            assertNotNull("The list of results for events is NULL", results);
 
         } catch (HttpClientErrorException ex) {
 
@@ -495,7 +670,9 @@ public class SdkClientIntegrationTest {
             events.add(event2);
 
             //Posting events
-            client.getEventClient().send(events);
+            List<Result> results = client.getEventClient().send(events);
+
+            assertNotNull("The list of results for events is NULL", results);
 
         } catch (HttpClientErrorException ex) {
 
@@ -537,7 +714,9 @@ public class SdkClientIntegrationTest {
             events.add(event2);
 
             //Posting events
-            client.getEventClient().send(DEVICE_ID, events);
+            List<Result> results = client.getEventClient().send(DEVICE_ID, events);
+
+            assertNotNull("The list of results for events is NULL", results);
 
         } catch (HttpClientErrorException ex) {
 
@@ -561,8 +740,14 @@ public class SdkClientIntegrationTest {
     public void T055_CleanUp() {
         client.getOwnerClient().delete(OWNER_USERNAME);
         client.getOwnerClient().delete(OWNER_USERNAME_WITH_OWNER_LINK);
+        for (String batchUsername : BATCH_OWNER_USERNAME) {
+            client.getOwnerClient().delete(batchUsername);
+        }
         client.getObjectClient().delete(DEVICE_ID);
         client.getObjectClient().delete(DEVICE_ID_WITH_OWNER_LINK);
+        for (String batchUsername : BATCH_OWNER_USERNAME) {
+            client.getOwnerClient().delete(batchUsername);
+        }
     }
     
     @Test
@@ -588,7 +773,7 @@ public class SdkClientIntegrationTest {
     }
 
     @Test
-    public void T060_SearchDataset() {
+    public void T065_SearchDataset() {
         try {
             // Perform a Basic Search
             List<DataSet> datasets = client.getSearchClient().getDatasets();
