@@ -13,6 +13,7 @@ import static com.mnubo.java.sdk.client.Constants.CLIENT_SOCKET_TIMEOUT;
 import static com.mnubo.java.sdk.client.Constants.HOST_NAME;
 import static com.mnubo.java.sdk.client.Constants.HTTP_PROTOCOL;
 import static com.mnubo.java.sdk.client.Constants.INGESTION_PORT;
+import static com.mnubo.java.sdk.client.Constants.RESTITUTION_PORT;
 import static com.mnubo.java.sdk.client.Constants.SECURITY_CONSUMER_KEY;
 import static com.mnubo.java.sdk.client.Constants.SECURITY_CONSUMER_SECRET;
 import static com.mnubo.java.sdk.client.utils.ValidationUtils.notBlank;
@@ -111,6 +112,9 @@ public abstract class MnuboSDKFactory {
         }
         if (properties.containsKey(INGESTION_PORT)) {
             configBuilder.withIngestionPort(properties.getProperty(INGESTION_PORT));
+        }
+        if (properties.containsKey(RESTITUTION_PORT)) {
+            configBuilder.withRestitutionPort(properties.getProperty(RESTITUTION_PORT));
         }
         if (properties.containsKey(AUTHENTICATION_PORT)) {
             configBuilder.withAuthenticationPort(properties.getProperty(AUTHENTICATION_PORT));

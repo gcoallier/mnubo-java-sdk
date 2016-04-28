@@ -13,6 +13,7 @@ import static com.mnubo.java.sdk.client.Constants.CLIENT_SOCKET_TIMEOUT;
 import static com.mnubo.java.sdk.client.Constants.HOST_NAME;
 import static com.mnubo.java.sdk.client.Constants.HTTP_PROTOCOL;
 import static com.mnubo.java.sdk.client.Constants.INGESTION_PORT;
+import static com.mnubo.java.sdk.client.Constants.RESTITUTION_PORT;
 import static com.mnubo.java.sdk.client.Constants.SECURITY_CONSUMER_KEY;
 import static com.mnubo.java.sdk.client.Constants.SECURITY_CONSUMER_SECRET;
 import static java.lang.String.format;
@@ -57,6 +58,7 @@ public class MnuboSDKClientTest {
         {
             put(HOST_NAME, PropertyType.TEXT);
             put(INGESTION_PORT, PropertyType.PORT);
+            put(RESTITUTION_PORT, PropertyType.PORT);
             put(AUTHENTICATION_PORT, PropertyType.PORT);
             put(SECURITY_CONSUMER_KEY, PropertyType.TEXT);
             put(SECURITY_CONSUMER_SECRET, PropertyType.TEXT);

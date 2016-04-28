@@ -44,6 +44,19 @@ class SDKService {
         template.put(url, request);
     }
 
+    <T> T putRequest(String url, Object object, Class<T> objectClass) {
+        // entity
+        HttpEntity<?> request = new HttpEntity<>(object, buildHeaders());
+
+        ResponseEntity<T> response = template.exchange(url, HttpMethod.PUT, request, objectClass);
+        if (response == null) {
+            return null;
+        }
+        else {
+            return response.getBody();
+        }
+    }
+
     <T> ResponseEntity<T> getRequestResponseEntity(String url, Class<T> objectClass) {
         // entity
         HttpEntity<?> request = new HttpEntity<Object>(buildHeaders());
