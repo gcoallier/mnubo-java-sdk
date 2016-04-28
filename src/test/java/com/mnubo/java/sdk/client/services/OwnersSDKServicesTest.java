@@ -5,20 +5,45 @@ import static java.lang.String.format;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 import com.mnubo.java.sdk.client.models.Owner;
+import com.mnubo.java.sdk.client.models.result.Result;
+import com.mnubo.java.sdk.client.models.result.Result.ResultStates;
 import com.mnubo.java.sdk.client.spi.OwnersSDK;
 
 public class OwnersSDKServicesTest extends AbstractServiceTest {
 
     private OwnersSDK ownerClient;
 
+    protected static ResponseEntity httpResponse = mock(ResponseEntity.class);
+
     @Before
     public void ownerSetup() {
         ownerClient = getClient().getOwnerClient();
+
+        List<Result> resultsMockSetup = new ArrayList<>();
+        resultsMockSetup.add(new Result("idOwnerTest1", ResultStates.Success, ""));
+        resultsMockSetup.add(new Result("idOwnerTest2", ResultStates.Error, "Invalid attribute X for the Owner"));
+        resultsMockSetup.add(new Result("idOwnerTest3", ResultStates.Error, "Error Z"));
+        resultsMockSetup.add(new Result("idOwnerResult4", ResultStates.Success, ""));
+
+        // Mock Call PUT Owners
+        when(httpResponse.getBody()).thenReturn(resultsMockSetup);
+        when(restTemplate.exchange(any(String.class), eq(HttpMethod.PUT), any(HttpEntity.class), eq(List.class)))
+                         .thenReturn(httpResponse);
     }
 
     @Test
@@ -194,5 +219,50 @@ public class OwnersSDKServicesTest extends AbstractServiceTest {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Owner body cannot be null.");
         ownerClient.update(null, username);
+    }
+
+    @Test
+    public void createUpdateThenOk() {
+
+        List<Owner> owners = new ArrayList<>();
+        owners.add(Owner.builder().withUsername("user1").build());
+        owners.add(Owner.builder().withUsername("user2").build());
+        owners.add(Owner.builder().withUsername("user3").build());
+        owners.add(Owner.builder().withUsername("user4").build());
+
+        String url = getClient().getSdkService().getIngestionBaseUri().path(OWNER_PATH).build().toString();
+
+        assertThat(url, is(equalTo(format("https://%s:443/api/v3/owners", HOST))));
+
+        List<Result> results = ownerClient.createUpdate(owners);
+
+        validateResult(results);
+    }
+
+    @Test
+    public void createUpdateNullThenFail() {
+
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("List of owners body cannot be null.");
+        ownerClient.createUpdate(null);
+    }
+
+    private void validateResult(List<Result> results) {
+        assertThat(results.size(), equalTo(4));
+
+        assertThat(results.get(0).getId(), equalTo("idOwnerTest1"));
+        assertThat(results.get(1).getId(), equalTo("idOwnerTest2"));
+        assertThat(results.get(2).getId(), equalTo("idOwnerTest3"));
+        assertThat(results.get(3).getId(), equalTo("idOwnerResult4"));
+
+        assertThat(results.get(0).getResult(), equalTo(ResultStates.Success));
+        assertThat(results.get(1).getResult(), equalTo(ResultStates.Error));
+        assertThat(results.get(2).getResult(), equalTo(ResultStates.Error));
+        assertThat(results.get(3).getResult(), equalTo(ResultStates.Success));
+
+        assertThat(results.get(0).getMessage(), equalTo(""));
+        assertThat(results.get(1).getMessage(), equalTo("Invalid attribute X for the Owner"));
+        assertThat(results.get(2).getMessage(), equalTo("Error Z"));
+        assertThat(results.get(3).getMessage(), equalTo(""));
     }
 }

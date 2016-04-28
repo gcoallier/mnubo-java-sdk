@@ -1,6 +1,9 @@
 package com.mnubo.java.sdk.client.spi;
 
+import java.util.List;
+
 import com.mnubo.java.sdk.client.models.Owner;
+import com.mnubo.java.sdk.client.models.result.Result;
 
 /**
  * Owner SDK Client. This interface gives access to handle Owners.
@@ -38,4 +41,14 @@ public interface OwnersSDK {
      */
     void delete(String username);
 
+    /**
+     * Add or update a list of owners.  
+     * If an owner doesn't exist, it will be created, otherwise it will be updated.
+     *
+     * @param owners, list of Owners bean to be created or updated.
+     * 
+     * @return the list of result for all the owners with corresponding id, status and
+     * message.
+     */
+    List<Result> createUpdate(List<Owner> owners);
 }

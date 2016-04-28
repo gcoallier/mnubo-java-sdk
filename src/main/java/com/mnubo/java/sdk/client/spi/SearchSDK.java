@@ -11,12 +11,17 @@ import com.mnubo.java.sdk.client.models.result.ResultSet;
 public interface SearchSDK {
 
     /**
-     * Send a search query using mnubo query language (MQL).
+     * Use the Search API to perform a wide range of analytics on your data.
+     * @param query, the query in mnubo query language (MQL)
+     * 
+     * @return the result set of the query sent with all rows and columns definition.
      */
     ResultSet search(String query);
 
     /**
-     * Return the list of datasets that can be searched.
+     * @return the list of datasets that can be searched.
+     * This list is in JSON format and describes what can be queried 
+     * for objects, events, and owners. 
      */
     List<DataSet> getDatasets();
 
