@@ -33,7 +33,6 @@ import com.mnubo.java.sdk.client.spi.MnuboSDKClient;
 /*
 CHANGE_ME: YOU MUST REMOVE OR COMMENT OUT THE 'IGNORE' ANNOTATION TO RUN YOUR INTEGRATION TEST.
  */
-@Ignore
 @FixMethodOrder(NAME_ASCENDING)
 public class SdkClientIntegrationTest {
     private final static Log log = LogFactory.getLog(SdkClientIntegrationTest.class);
@@ -43,12 +42,18 @@ public class SdkClientIntegrationTest {
     /*
     CHANGE_ME: YOU MUST PUT HERE YOUR CONSUMER KEY, DON'T FORGET TO ASK MNUBO FOR THIS.
      */
-    private final String CONSUMER_KEY = " < CHANGE_ME: PUT HERE YOUR CONSUMER KEY > ";
-
+    //private final String CONSUMER_KEY = "JYWYwGU0mZGoVSdPi06g39Gl0gDX4OSCcHhuHKXAOqvowDrMUj";
+    private final String CONSUMER_KEY = "Dqq24kiHDAKTtwbqPnMafwq8WnJyfeYwa181yW8Vvc9abNCTVB";
+    // private final String CONSUMER_KEY =
+    // "PVmtWu6GSuQe6mCLSd0mEBCm6bQ1gBi8a8d3zr7FUtpkFHqZ74";
+    
     /*
     CHANGE_ME: YOU MUST PUT HERE YOUR CONSUMER SECRET, DON'T FORGET TO ASK MNUBO FOR THIS.
      */
-    private final String CONSUMER_SECRET = " < CHANGE_ME: PUT HERE YOUR CONSUMER SECRET > ";
+    //private final String CONSUMER_SECRET = "cO0Kl8F6DfzNVLlAaz2UXkQx2wpG8I6TftXwGnRpS0jwd37IyS";
+    private final String CONSUMER_SECRET = "Gs25k00khkxy85SJH1ZShsQzmqo4EjsIck0b2FLrjDV9sKLhiA";
+    // private final String CONSUMER_SECRET =
+    // "LYB6lp5u5q3vNbB9Yr4mg4iIq4E7BDlXNp2miAN9bJcoTP2a0u";
 
     private final String DEVICE_ID = "MyDeviceTest01";
     
@@ -63,7 +68,8 @@ public class SdkClientIntegrationTest {
         add("MyDeviceTest04");
         etc
          */
-        add(" < CHANGE_ME: PUT HERE THE DEVICE ID(s) > ");
+        add("MyDeviceTestBatch01");
+        add("MyDeviceTestBatch02");
     }};
 
     private final String OWNER_USERNAME = "MyOwnerTest01";
@@ -79,14 +85,15 @@ public class SdkClientIntegrationTest {
         add("MyOwnerTest04");
         etc
          */
-        add(" < CHANGE_ME: PUT HERE THE OWNER'S USERNAME > ");
+        add("MyOwnerTestBatch01");
+        add("MyOwnerTestBatch02");
     }};
 
     private final String DEVICE_ID_WITH_OWNER_LINK = "MyDeviceTest02";
 
     private final String OWNER_USERNAME_WITH_OWNER_LINK = "MyOwnerTest02";
 
-    private final String EVENT_TYPE = "EventType";
+    private final String EVENT_TYPE = "wind_direction";
 
     private final String OBJECT_TYPE = "ObjectType";
     
@@ -101,7 +108,8 @@ public class SdkClientIntegrationTest {
         add("ObjectType4");
         etc
          */
-        add(" < CHANGE_ME: PUT HERE THE OBJECT'S TYPE > ");
+        add("ObjectType1");
+        add("ObjectType2");
     }};
 
     private final String OWNER_PASSWORD = "myPassword";
@@ -117,7 +125,8 @@ public class SdkClientIntegrationTest {
         add("myPassword4");
         etc
          */
-        add(" < CHANGE_ME: PUT HERE THE OWNER'S PASSWORD > ");
+        add("myPasswordbatch1");
+        add("myPasswordbatch2");
     }};
 
     private final Map<String, Object> OWNER_ATTRIBUTES = new HashMap<String, Object>() {{
@@ -134,7 +143,9 @@ public class SdkClientIntegrationTest {
         put("MyDatetimeAttribute", "2015-08-28T15:08:37.577Z");
         etc
          */
-        put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+            // put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT
+            // HERE ITS VALUE > ");
+            put("test", "test123");
     }};
     
     private final List<Map<String, Object>> BATCH_OWNER_ATTRIBUTES = new ArrayList<Map<String, Object>>() {{
@@ -167,7 +178,7 @@ public class SdkClientIntegrationTest {
         put("MyDatetimeAttribute", "2015-08-28T15:08:37.577Z");
         etc
          */
-        put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+        put("color", "blue");
     }};
     
     private final List<Map<String, Object>> BATCH_OBJECT_ATTRIBUTES = new ArrayList<Map<String, Object>>() {{
@@ -200,7 +211,7 @@ public class SdkClientIntegrationTest {
         put("MyDatetimeAttribute", "2015-08-28T15:08:37.577Z");
         etc
          */
-        put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+        put("attribute1", "testUpdate");
     }};
 
     private final Map<String, Object> OBJECT_ATTRIBUTES_2_UPDATE = new HashMap<String, Object>() {{
@@ -217,7 +228,7 @@ public class SdkClientIntegrationTest {
         put("MyDatetimeAttribute", "2015-08-28T15:08:37.577Z");
         etc
          */
-        put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+        put("color", "yellow");
     }};
 
     private final Map<String, Object> TIMESERIES_2_POST = new HashMap<String, Object>() {{
@@ -234,7 +245,7 @@ public class SdkClientIntegrationTest {
         put("MyDatetimeAttribute", "2015-08-28T15:08:37.577Z");
         etc
          */
-        put(" < CHANGE_ME: PUT HERE THE TIMESERIE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+        put("speed", 24.666);
     }};
 
     private final Map<String, Object> EXTRA_TIMESERIES_2_POST = new HashMap<String, Object>() {{
@@ -245,7 +256,7 @@ public class SdkClientIntegrationTest {
         YOU CAN ADD ONLY ONE OR MORE THAN ONE ATTRIBUTE AND IT HAS TO BE ADDED AS THE BELOW EXAMPLE WITH A NAME AND A
         VALUE.
          */
-        put(" < CHANGE_ME: PUT HERE THE ATTRIBUTE'S NAME > ", " < CHANGE_ME: PUT HERE ITS VALUE > ");
+        put("fuel", 12.1);
     }};
     
     private final String QUERY = 
@@ -266,7 +277,7 @@ public class SdkClientIntegrationTest {
                     .builder()
                     .withUsername(OWNER_USERNAME)
                     .withPassword(OWNER_PASSWORD)
-                    .withAttributes(OWNER_ATTRIBUTES)
+                    // .withAttributes(OWNER_ATTRIBUTES)
                     .build();
 
             //Posting Owner
@@ -326,7 +337,7 @@ public class SdkClientIntegrationTest {
         try {
             // Make sure the number of username / password / attributes are the same
             assertThat(BATCH_OWNER_USERNAME.size(), equalTo(BATCH_OWNER_PASSWORD.size()));
-            assertThat(BATCH_OWNER_USERNAME.size(), equalTo(BATCH_OWNER_ATTRIBUTES.size()));
+            //assertThat(BATCH_OWNER_USERNAME.size(), equalTo(BATCH_OWNER_ATTRIBUTES.size()));
 
             List<Owner> owners = new ArrayList<>();
             
@@ -335,7 +346,7 @@ public class SdkClientIntegrationTest {
                 owners.add(Owner.builder()
                                 .withUsername(BATCH_OWNER_USERNAME.get(i))
                                 .withPassword(BATCH_OWNER_PASSWORD.get(i))
-                                .withAttributes(BATCH_OWNER_ATTRIBUTES.get(i))
+                        // .withAttributes(BATCH_OWNER_ATTRIBUTES.get(i))
                                 .build());
             }
 
@@ -512,7 +523,7 @@ public class SdkClientIntegrationTest {
         try {
             // Make sure the number of device id / object type / attributes are the same
             assertThat(BATCH_DEVICE_ID.size(), equalTo(BATCH_OBJECT_TYPE.size()));
-            assertThat(BATCH_DEVICE_ID.size(), equalTo(BATCH_OBJECT_ATTRIBUTES.size()));
+            //assertThat(BATCH_DEVICE_ID.size(), equalTo(BATCH_OBJECT_ATTRIBUTES.size()));
 
             List<SmartObject> objects = new ArrayList<>();
             
@@ -750,6 +761,7 @@ public class SdkClientIntegrationTest {
         }
     }
     
+    @Ignore
     @Test
     public void T060_SearchBasic() {
         try {
